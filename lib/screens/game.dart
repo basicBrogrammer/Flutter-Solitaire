@@ -41,13 +41,30 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 16),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [RemainingCards(deck, usedCards), FinishedCards()],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 5.0),
+              width: PlayingCard.width * 2.5,
+              child: RemainingCards(deck, usedCards),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              width: PlayingCard.width * 4.5,
+              child: FinishedCards(
+                finalHeartsDeck,
+                finalDiamondsDeck,
+                finalSpadesDeck,
+                finalClubsDeck,
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 16),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             CardColumn(cardColumn1),
             CardColumn(cardColumn2),

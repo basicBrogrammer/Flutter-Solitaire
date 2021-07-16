@@ -14,18 +14,8 @@ class RemainingCards extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        InkWell(
-          child: Opacity(
-            opacity: 0.4,
-            child: FaceDownCard(deck.last),
-          ),
-        ),
-        InkWell(
-          child: Opacity(
-            opacity: 0.4,
-            child: FaceUpCard(usedCards.last),
-          ),
-        )
+        FaceDownCard(deck.last),
+        FaceUpCard(usedCards.last),
       ],
     );
   }

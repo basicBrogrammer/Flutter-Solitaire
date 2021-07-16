@@ -7,6 +7,14 @@ class FaceUpCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Draggable(
+      child: _buildCard(),
+      feedback: _buildCard(),
+      childWhenDragging: Container(),
+    );
+  }
+
+  Widget _buildCard() {
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -15,8 +23,8 @@ class FaceUpCard extends StatelessWidget {
           color: Colors.white,
           border: Border.all(color: Colors.black),
         ),
-        height: 60,
-        width: 40,
+        height: PlayingCard.height,
+        width: PlayingCard.width,
         child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
