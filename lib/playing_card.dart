@@ -1,6 +1,7 @@
 enum CardSuit { spades, hearts, diamonds, clubs }
 
 enum CardType {
+  ace,
   two,
   three,
   four,
@@ -13,7 +14,6 @@ enum CardType {
   jack,
   queen,
   king,
-  ace
 }
 
 enum CardColor {

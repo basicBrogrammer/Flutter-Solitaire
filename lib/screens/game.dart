@@ -66,13 +66,13 @@ class _GameScreenState extends State<GameScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            CardColumn(cardColumn1),
-            CardColumn(cardColumn2),
-            CardColumn(cardColumn3),
-            CardColumn(cardColumn4),
-            CardColumn(cardColumn5),
-            CardColumn(cardColumn6),
-            CardColumn(cardColumn7),
+            CardColumn(cardColumn1, 0, _moveCards),
+            CardColumn(cardColumn2, 1, _moveCards),
+            CardColumn(cardColumn3, 2, _moveCards),
+            CardColumn(cardColumn4, 3, _moveCards),
+            CardColumn(cardColumn5, 4, _moveCards),
+            CardColumn(cardColumn6, 5, _moveCards),
+            CardColumn(cardColumn7, 6, _moveCards),
           ],
         ),
       ],
@@ -89,15 +89,7 @@ class _GameScreenState extends State<GameScreen> {
 
       deck.shuffle();
 
-      var columnList = [
-        cardColumn1,
-        cardColumn2,
-        cardColumn3,
-        cardColumn4,
-        cardColumn5,
-        cardColumn6,
-        cardColumn7,
-      ];
+      var columnList = _cardColumns();
 
       columnList.forEach((col) {
         var sublist = deck.sublist(0, columnList.indexOf(col) + 1);
@@ -110,5 +102,28 @@ class _GameScreenState extends State<GameScreen> {
 
       usedCards.add(deck.removeLast()..faceUp = true);
     });
+  }
+
+  void _moveCards(List<PlayingCard> cards, int fromIdx, int toIdx) {
+    var columns = _cardColumns();
+    var from = columns[fromIdx];
+    var to = columns[toIdx];
+
+    setState(() {
+      from.removeWhere((card) => cards.contains(card));
+      to.addAll(cards);
+    });
+  }
+
+  List<List<PlayingCard>> _cardColumns() {
+    return [
+      cardColumn1,
+      cardColumn2,
+      cardColumn3,
+      cardColumn4,
+      cardColumn5,
+      cardColumn6,
+      cardColumn7,
+    ];
   }
 }

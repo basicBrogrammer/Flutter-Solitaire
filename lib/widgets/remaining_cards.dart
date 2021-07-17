@@ -15,7 +15,7 @@ class RemainingCards extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         FaceDownCard(deck.last),
-        FaceUpCard(usedCards.last),
+        FaceUpCard(usedCards.last, [usedCards.last], null),
       ],
     );
   }

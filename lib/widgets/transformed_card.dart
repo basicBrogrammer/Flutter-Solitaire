@@ -7,11 +7,15 @@ class TransformedCard extends StatelessWidget {
   final PlayingCard card;
   final double transformDistance;
   final int transformIndex;
+  final int? colIdx;
+  final List<PlayingCard> attachedCards;
 
   const TransformedCard({
     required this.card,
     this.transformDistance = 15.0,
     this.transformIndex = 0,
+    this.attachedCards = const [],
+    this.colIdx,
   });
 
   @override
@@ -23,7 +27,9 @@ class TransformedCard extends StatelessWidget {
           transformIndex * transformDistance,
           0.0,
         ),
-      child: card.faceUp ? FaceUpCard(card) : FaceDownCard(card),
+      child: card.faceUp
+          ? FaceUpCard(card, attachedCards, colIdx)
+          : FaceDownCard(card),
     );
   }
 }

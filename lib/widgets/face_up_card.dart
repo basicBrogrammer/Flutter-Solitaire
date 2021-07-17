@@ -3,14 +3,17 @@ import 'package:solitaire/playing_card.dart';
 
 class FaceUpCard extends StatelessWidget {
   final PlayingCard card;
-  const FaceUpCard(this.card);
+  final List<PlayingCard> attachedCards;
+  final int? colIdx;
+  FaceUpCard(this.card, this.attachedCards, this.colIdx);
 
   @override
   Widget build(BuildContext context) {
     return Draggable(
       child: _buildCard(),
-      feedback: _buildCard(),
+      feedback: _buildCard(), // this should be attached cards
       childWhenDragging: Container(),
+      data: {"cards": attachedCards, "column": colIdx},
     );
   }
 
