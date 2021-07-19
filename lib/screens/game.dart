@@ -41,14 +41,14 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 16),
+        SizedBox(height: PlayingCard.height / 3),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               margin: EdgeInsets.symmetric(horizontal: 5.0),
               width: PlayingCard.width * 2.5,
-              child: RemainingCards(deck, usedCards),
+              child: RemainingCards(deck, usedCards, _drawCard),
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -62,7 +62,7 @@ class _GameScreenState extends State<GameScreen> {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        SizedBox(height: PlayingCard.height / 3),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -131,7 +131,27 @@ class _GameScreenState extends State<GameScreen> {
 
     setState(() {
       from.removeWhere((card) => cards.contains(card));
+      if (!from.last.faceUp) {
+        from.last.faceUp = true;
+      }
       to.addAll(cards);
+    });
+  }
+
+  void _drawCard() {
+    setState(() {
+      if (deck.length > 0) {
+        print('DRAWING CARD');
+        var newCard = deck.removeLast();
+        newCard.faceUp = true;
+        usedCards.add(newCard);
+      } else {
+        deck = usedCards.map((card) {
+          card.faceUp = false;
+          return card;
+        }).toList();
+        usedCards = [];
+      }
     });
   }
 

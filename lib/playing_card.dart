@@ -24,8 +24,8 @@ enum CardColor {
 }
 
 class PlayingCard {
-  static const width = 40.0;
-  static const height = 60.0;
+  static const width = 50.0;
+  static const height = 70.0;
   CardSuit suit;
   CardType value;
   bool faceUp;

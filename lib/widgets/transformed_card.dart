@@ -11,7 +11,7 @@ class TransformedCard extends StatelessWidget {
 
   const TransformedCard({
     required this.card,
-    this.transformDistance = 15.0,
+    this.transformDistance = 20.0,
     this.transformIndex = 0,
     this.attachedCards = const [],
     this.colIdx,
