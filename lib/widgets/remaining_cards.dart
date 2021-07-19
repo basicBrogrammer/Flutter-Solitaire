@@ -11,6 +11,9 @@ class RemainingCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var lastUsedCard = usedCards.isEmpty ? null : usedCards.last;
+    var secondFromLastUsedCard =
+        usedCards.length > 1 ? usedCards[usedCards.length - 2] : null;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -19,7 +22,17 @@ class RemainingCards extends StatelessWidget {
           behavior: HitTestBehavior.translucent,
           child: DisplayCard(deck.length > 0 ? deck.first : null),
         ),
-        DisplayCard(usedCards.length > 0 ? usedCards.last : null),
+        usedCards.isEmpty
+            ? DisplayCard(null)
+            : Draggable(
+                child: DisplayCard(lastUsedCard),
+                feedback: DisplayCard(lastUsedCard),
+                childWhenDragging: DisplayCard(secondFromLastUsedCard),
+                data: {
+                  "cards": [lastUsedCard!],
+                  "column": -1
+                },
+              ),
       ],
     );
   }

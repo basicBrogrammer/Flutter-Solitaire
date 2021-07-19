@@ -126,16 +126,22 @@ class _GameScreenState extends State<GameScreen> {
 
   void _moveCards(List<PlayingCard> cards, int fromIdx, int toIdx) {
     var columns = _cardColumns();
-    var from = columns[fromIdx];
     var to = columns[toIdx];
+    if (fromIdx == -1) {
+      setState(() {
+        to.add(usedCards.removeLast());
+      });
+    } else {
+      var from = columns[fromIdx];
 
-    setState(() {
-      from.removeWhere((card) => cards.contains(card));
-      if (!from.last.faceUp) {
-        from.last.faceUp = true;
-      }
-      to.addAll(cards);
-    });
+      setState(() {
+        from.removeWhere((card) => cards.contains(card));
+        if (!from.last.faceUp) {
+          from.last.faceUp = true;
+        }
+        to.addAll(cards);
+      });
+    }
   }
 
   void _drawCard() {
