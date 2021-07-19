@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum CardSuit { spades, hearts, diamonds, clubs }
 
 enum CardType {
@@ -24,23 +26,69 @@ enum CardColor {
 class PlayingCard {
   static const width = 40.0;
   static const height = 60.0;
-  CardSuit cardSuit;
-  CardType cardType;
+  CardSuit suit;
+  CardType value;
   bool faceUp;
   bool opened;
 
   PlayingCard({
-    required this.cardSuit,
-    required this.cardType,
+    required this.suit,
+    required this.value,
     this.faceUp = false,
     this.opened = false,
   });
 
   CardColor get cardColor {
-    if (cardSuit == CardSuit.hearts || cardSuit == CardSuit.diamonds) {
+    if (suit == CardSuit.hearts || suit == CardSuit.diamonds) {
       return CardColor.red;
     } else {
       return CardColor.black;
+    }
+  }
+
+  Image get image {
+    switch (suit) {
+      case CardSuit.clubs:
+        return Image.asset('assets/clubs.png');
+      case CardSuit.spades:
+        return Image.asset('assets/spades.png');
+      case CardSuit.diamonds:
+        return Image.asset('assets/diamonds.png');
+      case CardSuit.hearts:
+        return Image.asset('assets/hearts.png');
+    }
+  }
+
+  String get valueToString {
+    switch (value) {
+      case CardType.ace:
+        return 'A';
+      case CardType.king:
+        return 'K';
+      case CardType.queen:
+        return 'Q';
+      case CardType.jack:
+        return 'J';
+      case CardType.ten:
+        return '10';
+      case CardType.nine:
+        return '9';
+      case CardType.eight:
+        return '8';
+      case CardType.seven:
+        return '7';
+      case CardType.six:
+        return '6';
+      case CardType.five:
+        return '5';
+      case CardType.four:
+        return '4';
+      case CardType.three:
+        return '3';
+      case CardType.two:
+        return '2';
+      default:
+        return '?';
     }
   }
 }

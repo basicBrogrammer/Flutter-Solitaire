@@ -75,6 +75,7 @@ class _GameScreenState extends State<GameScreen> {
             CardColumn(cardColumn7, 6, _moveCards),
           ],
         ),
+        ElevatedButton(onPressed: _resetGame, child: Text('New')),
       ],
     );
   }
@@ -83,7 +84,7 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       CardSuit.values.forEach((suit) {
         CardType.values.forEach((type) {
-          deck.add(PlayingCard(cardSuit: suit, cardType: type));
+          deck.add(PlayingCard(suit: suit, value: type));
         });
       });
 
@@ -102,6 +103,25 @@ class _GameScreenState extends State<GameScreen> {
 
       usedCards.add(deck.removeLast()..faceUp = true);
     });
+  }
+
+  void _resetGame() {
+    setState(() {
+      deck = [];
+      usedCards = [];
+      cardColumn1 = [];
+      cardColumn2 = [];
+      cardColumn3 = [];
+      cardColumn4 = [];
+      cardColumn5 = [];
+      cardColumn6 = [];
+      cardColumn7 = [];
+      finalHeartsDeck = [];
+      finalDiamondsDeck = [];
+      finalSpadesDeck = [];
+      finalClubsDeck = [];
+    });
+    _initializeGame();
   }
 
   void _moveCards(List<PlayingCard> cards, int fromIdx, int toIdx) {

@@ -47,7 +47,7 @@ class CardColumn extends StatelessWidget {
         var incomingCard = draggedCards.first;
 
         return bottomCard.cardColor != incomingCard.cardColor &&
-            bottomCard.cardType.index - incomingCard.cardType.index == 1;
+            bottomCard.value.index - incomingCard.value.index == 1;
       },
     ));
   }

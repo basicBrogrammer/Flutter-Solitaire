@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:solitaire/playing_card.dart';
-import 'package:solitaire/widgets/face_down_card.dart';
-import 'package:solitaire/widgets/face_up_card.dart';
+import 'package:solitaire/widgets/display_card.dart';
 
 class TransformedCard extends StatelessWidget {
   final PlayingCard card;
@@ -27,9 +26,12 @@ class TransformedCard extends StatelessWidget {
           transformIndex * transformDistance,
           0.0,
         ),
-      child: card.faceUp
-          ? FaceUpCard(card, attachedCards, colIdx)
-          : FaceDownCard(card),
+      child: Draggable(
+        child: DisplayCard(card),
+        feedback: DisplayCard(card), // this should be attached cards
+        childWhenDragging: Container(),
+        data: {"cards": attachedCards, "column": colIdx},
+      ),
     );
   }
 }

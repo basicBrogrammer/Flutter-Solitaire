@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:solitaire/playing_card.dart';
-import 'package:solitaire/widgets/face_down_card.dart';
-import 'package:solitaire/widgets/face_up_card.dart';
+import 'package:solitaire/widgets/display_card.dart';
 
 class RemainingCards extends StatelessWidget {
   final List<PlayingCard> deck;
@@ -14,8 +13,8 @@ class RemainingCards extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        FaceDownCard(deck.last),
-        FaceUpCard(usedCards.last, [usedCards.last], null),
+        DisplayCard(deck.length > 0 ? deck.first : null),
+        DisplayCard(usedCards.length > 0 ? usedCards.first : null),
       ],
     );
   }
