@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:solitaire/playing_card.dart';
 import 'package:solitaire/widgets/card_column.dart';
-import 'package:solitaire/widgets/finished_cards.dart';
+import 'package:solitaire/widgets/finished_deck.dart';
 import 'package:solitaire/widgets/remaining_cards.dart';
 
 class GameScreen extends StatefulWidget {
@@ -53,11 +53,27 @@ class _GameScreenState extends State<GameScreen> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.0),
               width: PlayingCard.width * 4.5,
-              child: FinishedCards(
-                finalHeartsDeck,
-                finalDiamondsDeck,
-                finalSpadesDeck,
-                finalClubsDeck,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  FinishedDeck(
+                      cards: finalHeartsDeck,
+                      suit: CardSuit.hearts,
+                      retireCard: _retireCard),
+                  FinishedDeck(
+                      cards: finalSpadesDeck,
+                      suit: CardSuit.spades,
+                      retireCard: _retireCard),
+                  FinishedDeck(
+                      cards: finalDiamondsDeck,
+                      suit: CardSuit.diamonds,
+                      retireCard: _retireCard),
+                  FinishedDeck(
+                      cards: finalClubsDeck,
+                      suit: CardSuit.clubs,
+                      retireCard: _retireCard),
+                ],
               ),
             ),
           ],
@@ -140,6 +156,37 @@ class _GameScreenState extends State<GameScreen> {
           from.last.faceUp = true;
         }
         to.addAll(cards);
+      });
+    }
+  }
+
+  List<PlayingCard> _finalDeck(CardSuit suit) {
+    switch (suit) {
+      case CardSuit.hearts:
+        return finalHeartsDeck;
+      case CardSuit.diamonds:
+        return finalDiamondsDeck;
+      case CardSuit.clubs:
+        return finalClubsDeck;
+      case CardSuit.spades:
+        return finalSpadesDeck;
+    }
+  }
+
+  void _retireCard(PlayingCard card, int fromIdx, CardSuit suit) {
+    var finalDeck = _finalDeck(suit);
+    if (fromIdx == -1) {
+      setState(() {
+        finalDeck.add(usedCards.removeLast());
+      });
+    } else {
+      var columns = _cardColumns();
+      var from = columns[fromIdx];
+      setState(() {
+        finalDeck.add(from.removeLast());
+        if (from.length > 0 && !from.last.faceUp) {
+          from.last.faceUp = true;
+        }
       });
     }
   }
