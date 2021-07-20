@@ -136,7 +136,7 @@ class _GameScreenState extends State<GameScreen> {
 
       setState(() {
         from.removeWhere((card) => cards.contains(card));
-        if (!from.last.faceUp) {
+        if (from.length > 0 && !from.last.faceUp) {
           from.last.faceUp = true;
         }
         to.addAll(cards);

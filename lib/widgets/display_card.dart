@@ -33,18 +33,28 @@ class DisplayCard extends StatelessWidget {
 
   Widget? _buildChild() {
     if (card is PlayingCard && card!.faceUp) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      return Column(
         children: [
-          Center(
-            child: Text(
-              card!.valueToString,
-              style: TextStyle(fontSize: 16),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Center(
+                child: Text(
+                  card!.valueToString,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Container(
+                height: 10.0,
+                width: 10.0,
+                child: card!.image,
+              ),
+            ],
           ),
           Container(
-            height: 10.0,
-            width: 10.0,
+            height: 30.0,
+            width: 30.0,
+            margin: EdgeInsets.all(8.0),
             child: card!.image,
           ),
         ],
