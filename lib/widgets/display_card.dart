@@ -41,7 +41,10 @@ class DisplayCard extends StatelessWidget {
               Center(
                 child: Text(
                   card!.valueToString,
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(
+                      fontSize: 16,
+                      decoration: TextDecoration.none,
+                      color: card!.cardColor),
                 ),
               ),
               Container(

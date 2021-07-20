@@ -4,17 +4,19 @@ import 'package:solitaire/widgets/display_card.dart';
 
 class TransformedCard extends StatelessWidget {
   final PlayingCard card;
-  final double transformDistance;
   final int transformIndex;
-  final int? colIdx;
+  final int colIdx;
   final List<PlayingCard> attachedCards;
+  final Function(PlayingCard) onDrag;
+  final Function() onDragEnded;
 
   const TransformedCard({
     required this.card,
-    this.transformDistance = 20.0,
+    required this.onDrag,
+    required this.onDragEnded,
     this.transformIndex = 0,
     this.attachedCards = const [],
-    this.colIdx,
+    this.colIdx = -1,
   });
 
   @override
@@ -23,15 +25,38 @@ class TransformedCard extends StatelessWidget {
       transform: Matrix4.identity()
         ..translate(
           0.0,
-          transformIndex * transformDistance,
+          transformIndex * 20.0,
           0.0,
         ),
-      child: Draggable(
-        child: DisplayCard(card),
-        feedback: DisplayCard(card), // this should be attached cards
-        childWhenDragging: Container(),
-        data: {"cards": attachedCards, "column": colIdx},
-      ),
+      child: card.faceUp
+          ? Draggable(
+              hitTestBehavior: HitTestBehavior.opaque,
+              child: DisplayCard(card),
+              feedback: Stack(
+                children: attachedCards
+                    .map(
+                      (attachedCard) => TransformedCard(
+                        card: attachedCard,
+                        transformIndex: attachedCards.indexOf(attachedCard),
+                        onDrag: (PlayingCard _) {},
+                        onDragEnded: () {},
+                      ),
+                    )
+                    .toList(),
+              ), // this should be attached cards
+              childWhenDragging: Container(),
+              data: {"cards": attachedCards, "column": colIdx},
+              onDragStarted: () {
+                onDrag(card);
+              },
+              onDraggableCanceled: (_, __) {
+                onDragEnded();
+              },
+              onDragCompleted: () {
+                onDragEnded();
+              },
+            )
+          : DisplayCard(card),
     );
   }
 }

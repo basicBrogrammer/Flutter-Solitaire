@@ -18,11 +18,6 @@ enum CardType {
   king,
 }
 
-enum CardColor {
-  red,
-  black,
-}
-
 class PlayingCard {
   static const width = 50.0;
   static const height = 70.0;
@@ -38,11 +33,11 @@ class PlayingCard {
     this.opened = false,
   });
 
-  CardColor get cardColor {
+  Color get cardColor {
     if (suit == CardSuit.hearts || suit == CardSuit.diamonds) {
-      return CardColor.red;
+      return Colors.red;
     } else {
-      return CardColor.black;
+      return Colors.black;
     }
   }
 
@@ -90,5 +85,9 @@ class PlayingCard {
       default:
         return '?';
     }
+  }
+
+  String get inspect {
+    return "$suit $value";
   }
 }
