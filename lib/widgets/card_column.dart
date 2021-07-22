@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:solitaire/models/deck.dart';
 import 'package:solitaire/playing_card.dart';
 import 'package:solitaire/widgets/transformed_card.dart';
 import 'dart:math';
 
 class CardColumn extends StatefulWidget {
-  final List<PlayingCard> cards;
   final int idx;
-  final void Function(List<PlayingCard>, int, int) moveCard;
-  CardColumn(this.cards, this.idx, this.moveCard);
+  CardColumn(this.idx);
 
   @override
   _CardColumnState createState() => _CardColumnState();
@@ -17,63 +17,69 @@ class _CardColumnState extends State<CardColumn> {
   int dragCardIndex = 100;
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: DragTarget(
-        builder: (
-          BuildContext context,
-          List<dynamic> accepted,
-          List<dynamic> rejected,
-        ) {
-          return Container(
-            height: 13 * 15, // can this be a function of PlayingCard height
-            width: PlayingCard.width,
-            margin: EdgeInsets.all(2),
-            child: Stack(
-              children: widget.cards
-                  .map((card) => TransformedCard(
-                        card: card,
-                        transformIndex: widget.cards.indexOf(card),
-                        attachedCards:
-                            widget.cards.sublist(widget.cards.indexOf(card)),
-                        colIdx: widget.idx,
-                        onDrag: onDrag,
-                        onDragEnded: () {
-                          setState(() {
-                            dragCardIndex = 100;
-                          });
-                        },
-                      ))
-                  .toList()
-                  .sublist(0, min(widget.cards.length, dragCardIndex)),
-            ),
-          );
-        },
-        onAccept: (Map payload) {
-          widget.moveCard(payload['cards'], payload['column'], widget.idx);
-          setState(() {
-            dragCardIndex = 100;
-          });
-        },
-        onWillAccept: (value) {
-          if (widget.cards.length == 0) {
-            return true;
-          }
+    return Consumer<DeckModel>(builder: (context, model, child) {
+      var cards = model.getColumn(widget.idx);
 
-          List<PlayingCard> draggedCards = (value as Map)["cards"];
+      return Expanded(
+        child: DragTarget(
+          builder: (
+            BuildContext context,
+            List<dynamic> accepted,
+            List<dynamic> rejected,
+          ) {
+            return Container(
+                height: 13 * 15, // can this be a function of PlayingCard height
+                width: PlayingCard.width,
+                margin: EdgeInsets.all(2),
+                child: Consumer<DeckModel>(
+                  builder: (context, model, child) {
+                    var cards = model.getColumn(widget.idx);
+                    return Stack(
+                      children: cards
+                          .map((card) => TransformedCard(
+                                card: card,
+                                transformIndex: cards.indexOf(card),
+                                attachedCards:
+                                    cards.sublist(cards.indexOf(card)),
+                                colIdx: widget.idx,
+                                onDrag: (PlayingCard dragonCard) {
+                                  setState(() {
+                                    dragCardIndex = cards.indexOf(dragonCard);
+                                  });
+                                },
+                                onDragEnded: () {
+                                  setState(() {
+                                    dragCardIndex = 100;
+                                  });
+                                },
+                              ))
+                          .toList()
+                          .sublist(0, min(cards.length, dragCardIndex)),
+                    );
+                  },
+                ));
+          },
+          onAccept: (Map payload) {
+            model.moveCards(payload['cards'], payload['column'], widget.idx);
+            setState(() {
+              dragCardIndex = 100;
+            });
+          },
+          onWillAccept: (value) {
+            if (cards.length == 0) {
+              return true;
+            }
 
-          var bottomCard = widget.cards.last;
-          var incomingCard = draggedCards.first;
+            List<PlayingCard> draggedCards = (value as Map)["cards"];
 
-          return bottomCard.cardColor != incomingCard.cardColor &&
-              bottomCard.value.index - incomingCard.value.index == 1;
-        },
-      ),
-    );
-  }
+            var bottomCard = cards.last;
+            var incomingCard = draggedCards.first;
 
-  void onDrag(PlayingCard card) {
-    setState(() {
-      dragCardIndex = widget.cards.indexOf(card);
+            return bottomCard.cardColor != incomingCard.cardColor &&
+                bottomCard.value.index - incomingCard.value.index == 1;
+          },
+        ),
+      );
     });
   }
 }

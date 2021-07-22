@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:solitaire/models/deck.dart';
 import 'package:solitaire/playing_card.dart';
 import 'package:solitaire/widgets/display_card.dart';
 
 class FinishedDeck extends StatelessWidget {
-  final List<PlayingCard> cards;
   final CardSuit suit;
-  final Function(PlayingCard card, int fromIdx, CardSuit suit) retireCard;
-  const FinishedDeck(
-      {required this.cards, required this.suit, required this.retireCard});
+  const FinishedDeck(this.suit);
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget(
-      builder: (
-        BuildContext context,
-        List<dynamic> accepted,
-        List<dynamic> rejected,
-      ) {
-        return cards.isEmpty ? _emptyPile() : DisplayCard(cards.last);
-      },
-      onAccept: (Map payload) {
-        List<PlayingCard> draggedCards = payload["cards"] as List<PlayingCard>;
-        retireCard(draggedCards.first, payload['column'], suit);
-      },
-      onWillAccept: (value) {
-        List<PlayingCard> draggedCards = (value as Map)["cards"];
-        // dragging too many cards or it is the wrong suit
-        if (draggedCards.length > 1 || suit != draggedCards.last.suit) {
-          return false;
-        } else {
-          return cards.isEmpty ||
-              draggedCards.last.value.index - cards.last.value.index == 1;
-        }
-      },
-    );
+    return Consumer<DeckModel>(builder: (context, model, child) {
+      var cards = model.finalDeck(suit);
+      return DragTarget(
+        builder: (
+          BuildContext context,
+          List<dynamic> accepted,
+          List<dynamic> rejected,
+        ) {
+          return cards.isEmpty ? _emptyPile() : DisplayCard(cards.last);
+        },
+        onAccept: (Map payload) {
+          List<PlayingCard> draggedCards =
+              payload["cards"] as List<PlayingCard>;
+          model.retireCard(draggedCards.first, payload['column'], suit);
+        },
+        onWillAccept: (value) {
+          List<PlayingCard> draggedCards = (value as Map)["cards"];
+          // dragging too many cards or it is the wrong suit
+          if (draggedCards.length > 1 || suit != draggedCards.last.suit) {
+            return false;
+          } else {
+            return cards.isEmpty ||
+                draggedCards.last.value.index - cards.last.value.index == 1;
+          }
+        },
+      );
+    });
   }
 
   Widget _emptyPile() {

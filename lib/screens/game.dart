@@ -1,41 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:solitaire/models/deck.dart';
 import 'package:solitaire/playing_card.dart';
 import 'package:solitaire/widgets/card_column.dart';
 import 'package:solitaire/widgets/finished_deck.dart';
 import 'package:solitaire/widgets/remaining_cards.dart';
 
-class GameScreen extends StatefulWidget {
+class GameScreen extends StatelessWidget {
   GameScreen({Key? key}) : super(key: key);
-
-  @override
-  _GameScreenState createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
-  // Stores the cards on the seven columns
-  List<PlayingCard> cardColumn1 = [];
-  List<PlayingCard> cardColumn2 = [];
-  List<PlayingCard> cardColumn3 = [];
-  List<PlayingCard> cardColumn4 = [];
-  List<PlayingCard> cardColumn5 = [];
-  List<PlayingCard> cardColumn6 = [];
-  List<PlayingCard> cardColumn7 = [];
-
-  // Stores the card deck
-  List<PlayingCard> deck = [];
-  List<PlayingCard> usedCards = [];
-
-  // Stores the card in the upper boxes
-  List<PlayingCard> finalHeartsDeck = [];
-  List<PlayingCard> finalDiamondsDeck = [];
-  List<PlayingCard> finalSpadesDeck = [];
-  List<PlayingCard> finalClubsDeck = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeGame();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +20,7 @@ class _GameScreenState extends State<GameScreen> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 5.0),
               width: PlayingCard.width * 2.5,
-              child: RemainingCards(deck, usedCards, _drawCard),
+              child: RemainingCards(),
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -57,22 +29,10 @@ class _GameScreenState extends State<GameScreen> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  FinishedDeck(
-                      cards: finalHeartsDeck,
-                      suit: CardSuit.hearts,
-                      retireCard: _retireCard),
-                  FinishedDeck(
-                      cards: finalSpadesDeck,
-                      suit: CardSuit.spades,
-                      retireCard: _retireCard),
-                  FinishedDeck(
-                      cards: finalDiamondsDeck,
-                      suit: CardSuit.diamonds,
-                      retireCard: _retireCard),
-                  FinishedDeck(
-                      cards: finalClubsDeck,
-                      suit: CardSuit.clubs,
-                      retireCard: _retireCard),
+                  FinishedDeck(CardSuit.hearts),
+                  FinishedDeck(CardSuit.spades),
+                  FinishedDeck(CardSuit.diamonds),
+                  FinishedDeck(CardSuit.clubs),
                 ],
               ),
             ),
@@ -82,141 +42,21 @@ class _GameScreenState extends State<GameScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            CardColumn(cardColumn1, 0, _moveCards),
-            CardColumn(cardColumn2, 1, _moveCards),
-            CardColumn(cardColumn3, 2, _moveCards),
-            CardColumn(cardColumn4, 3, _moveCards),
-            CardColumn(cardColumn5, 4, _moveCards),
-            CardColumn(cardColumn6, 5, _moveCards),
-            CardColumn(cardColumn7, 6, _moveCards),
+            CardColumn(0),
+            CardColumn(1),
+            CardColumn(2),
+            CardColumn(3),
+            CardColumn(4),
+            CardColumn(5),
+            CardColumn(6),
           ],
         ),
-        ElevatedButton(onPressed: _resetGame, child: Text('New')),
+        Consumer<DeckModel>(
+          builder: (context, model, child) {
+            return ElevatedButton(onPressed: model.reset, child: Text('New'));
+          },
+        )
       ],
     );
-  }
-
-  void _initializeGame() {
-    setState(() {
-      CardSuit.values.forEach((suit) {
-        CardType.values.forEach((type) {
-          deck.add(PlayingCard(suit: suit, value: type));
-        });
-      });
-
-      deck.shuffle();
-
-      var columnList = _cardColumns();
-
-      columnList.forEach((col) {
-        var sublist = deck.sublist(0, columnList.indexOf(col) + 1);
-        var lastCard = sublist.removeLast();
-        lastCard.faceUp = true;
-        col.addAll([...sublist, lastCard]);
-
-        deck.removeRange(0, columnList.indexOf(col) + 1);
-      });
-
-      usedCards.add(deck.removeLast()..faceUp = true);
-    });
-  }
-
-  void _resetGame() {
-    setState(() {
-      deck = [];
-      usedCards = [];
-      cardColumn1 = [];
-      cardColumn2 = [];
-      cardColumn3 = [];
-      cardColumn4 = [];
-      cardColumn5 = [];
-      cardColumn6 = [];
-      cardColumn7 = [];
-      finalHeartsDeck = [];
-      finalDiamondsDeck = [];
-      finalSpadesDeck = [];
-      finalClubsDeck = [];
-    });
-    _initializeGame();
-  }
-
-  void _moveCards(List<PlayingCard> cards, int fromIdx, int toIdx) {
-    var columns = _cardColumns();
-    var to = columns[toIdx];
-    if (fromIdx == -1) {
-      setState(() {
-        to.add(usedCards.removeLast());
-      });
-    } else {
-      var from = columns[fromIdx];
-
-      setState(() {
-        from.removeWhere((card) => cards.contains(card));
-        if (from.length > 0 && !from.last.faceUp) {
-          from.last.faceUp = true;
-        }
-        to.addAll(cards);
-      });
-    }
-  }
-
-  List<PlayingCard> _finalDeck(CardSuit suit) {
-    switch (suit) {
-      case CardSuit.hearts:
-        return finalHeartsDeck;
-      case CardSuit.diamonds:
-        return finalDiamondsDeck;
-      case CardSuit.clubs:
-        return finalClubsDeck;
-      case CardSuit.spades:
-        return finalSpadesDeck;
-    }
-  }
-
-  void _retireCard(PlayingCard card, int fromIdx, CardSuit suit) {
-    var finalDeck = _finalDeck(suit);
-    if (fromIdx == -1) {
-      setState(() {
-        finalDeck.add(usedCards.removeLast());
-      });
-    } else {
-      var columns = _cardColumns();
-      var from = columns[fromIdx];
-      setState(() {
-        finalDeck.add(from.removeLast());
-        if (from.length > 0 && !from.last.faceUp) {
-          from.last.faceUp = true;
-        }
-      });
-    }
-  }
-
-  void _drawCard() {
-    setState(() {
-      if (deck.length > 0) {
-        print('DRAWING CARD');
-        var newCard = deck.removeLast();
-        newCard.faceUp = true;
-        usedCards.add(newCard);
-      } else {
-        deck = usedCards.map((card) {
-          card.faceUp = false;
-          return card;
-        }).toList();
-        usedCards = [];
-      }
-    });
-  }
-
-  List<List<PlayingCard>> _cardColumns() {
-    return [
-      cardColumn1,
-      cardColumn2,
-      cardColumn3,
-      cardColumn4,
-      cardColumn5,
-      cardColumn6,
-      cardColumn7,
-    ];
   }
 }
