@@ -18,7 +18,7 @@ class FinishedDeck extends StatelessWidget {
           List<dynamic> accepted,
           List<dynamic> rejected,
         ) {
-          return cards.isEmpty ? _emptyPile() : DisplayCard(cards.last);
+          return cards.isEmpty ? _emptyPile(context) : DisplayCard(cards.last);
         },
         onAccept: (Map payload) {
           List<PlayingCard> draggedCards =
@@ -39,12 +39,12 @@ class FinishedDeck extends StatelessWidget {
     });
   }
 
-  Widget _emptyPile() {
+  Widget _emptyPile(context) {
     return Opacity(
       opacity: 0.6,
       child: Container(
-        height: PlayingCard.height,
-        width: PlayingCard.width,
+        height: PlayingCard.calcHeight(context),
+        width: PlayingCard.calcWidth(context),
         decoration: BoxDecoration(
           color: Colors.transparent,
           border: Border.all(color: Colors.black),

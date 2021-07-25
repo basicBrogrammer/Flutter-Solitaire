@@ -6,8 +6,11 @@ import 'package:solitaire/widgets/transformed_card.dart';
 import 'dart:math';
 
 class CardColumn extends StatefulWidget {
+  CardColumn(this.idx, this.controller);
+
   final int idx;
-  CardColumn(this.idx);
+  final Animation<double> controller;
+  // final Animation<double> opacity;
 
   @override
   _CardColumnState createState() => _CardColumnState();
@@ -19,8 +22,30 @@ class _CardColumnState extends State<CardColumn> {
   Widget build(BuildContext context) {
     return Consumer<DeckModel>(builder: (context, model, child) {
       var cards = model.getColumn(widget.idx);
+      Size cardSize = Size(50, 100);
 
-      return Expanded(
+      return PositionedTransition(
+        rect: RelativeRectTween(
+          begin: RelativeRect.fromSize(
+              Rect.fromLTWH(
+                0,
+                0,
+                PlayingCard.calcWidth(context),
+                PlayingCard.calcHeight(context),
+              ),
+              cardSize),
+          end: RelativeRect.fromSize(
+              Rect.fromLTWH(
+                _columnLeft(context, widget.idx),
+                PlayingCard.calcHeight(context) * 1.5,
+                PlayingCard.calcWidth(context),
+                PlayingCard.calcHeight(context),
+              ),
+              cardSize),
+        ).animate(CurvedAnimation(
+          parent: widget.controller,
+          curve: Curves.easeInOutSine,
+        )),
         child: DragTarget(
           builder: (
             BuildContext context,
@@ -28,8 +53,9 @@ class _CardColumnState extends State<CardColumn> {
             List<dynamic> rejected,
           ) {
             return Container(
-                height: 13 * 15, // can this be a function of PlayingCard height
-                width: PlayingCard.width,
+                height: PlayingCard.calcHeight(context) *
+                    4.5, // can this be a function of PlayingCard height
+                width: PlayingCard.calcWidth(context),
                 margin: EdgeInsets.all(2),
                 child: Consumer<DeckModel>(
                   builder: (context, model, child) {
@@ -38,6 +64,7 @@ class _CardColumnState extends State<CardColumn> {
                       children: cards
                           .map((card) => TransformedCard(
                                 card: card,
+                                controller: widget.controller,
                                 transformIndex: cards.indexOf(card),
                                 attachedCards:
                                     cards.sublist(cards.indexOf(card)),
@@ -81,5 +108,10 @@ class _CardColumnState extends State<CardColumn> {
         ),
       );
     });
+  }
+
+  double _columnLeft(BuildContext context, int idx) {
+    return (PlayingCard.calcWidth(context) + PlayingCard.layoutGutter) * idx +
+        PlayingCard.layoutGutter;
   }
 }

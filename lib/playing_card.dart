@@ -19,6 +19,15 @@ enum CardType {
 }
 
 class PlayingCard {
+  static double layoutGutter = 5.0;
+  static double calcWidth(BuildContext context) {
+    return (MediaQuery.of(context).size.width - 8 * layoutGutter) / 7;
+  }
+
+  static double calcHeight(BuildContext context) {
+    return PlayingCard.calcWidth(context) * 1.5;
+  }
+
   static const width = 50.0;
   static const height = 70.0;
   CardSuit suit;

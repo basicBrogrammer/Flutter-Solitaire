@@ -42,7 +42,6 @@ class DeckModel extends ChangeNotifier {
       ];
 
   UnmodifiableListView<PlayingCard> getColumn(int idx) {
-    print('getColumn $idx');
     return cardColumns.elementAt(idx);
   }
 
@@ -78,9 +77,9 @@ class DeckModel extends ChangeNotifier {
     _finalDiamondsDeck = [];
     _finalSpadesDeck = [];
     _finalClubsDeck = [];
-
-    deal();
     notifyListeners();
+
+    new Future.delayed(const Duration(milliseconds: 300), deal);
   }
 
   void deal() {

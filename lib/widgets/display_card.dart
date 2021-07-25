@@ -8,8 +8,8 @@ class DisplayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: PlayingCard.height,
-      width: PlayingCard.width,
+      height: PlayingCard.calcHeight(context),
+      width: PlayingCard.calcWidth(context),
       decoration: BoxDecoration(
         color: backgroundColor(),
         border: Border.all(color: Colors.black),
@@ -42,9 +42,10 @@ class DisplayCard extends StatelessWidget {
                 child: Text(
                   card!.valueToString,
                   style: TextStyle(
-                      fontSize: 16,
-                      decoration: TextDecoration.none,
-                      color: card!.cardColor),
+                    fontSize: 16,
+                    decoration: TextDecoration.none,
+                    color: card!.cardColor,
+                  ),
                 ),
               ),
               Container(
