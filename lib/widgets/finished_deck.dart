@@ -31,8 +31,12 @@ class FinishedDeck extends StatelessWidget {
           if (draggedCards.length > 1 || suit != draggedCards.last.suit) {
             return false;
           } else {
-            return cards.isEmpty ||
-                draggedCards.last.value.index - cards.last.value.index == 1;
+            if (cards.isEmpty) {
+              return draggedCards.last.value == CardType.ace;
+            } else {
+              return draggedCards.last.value.index - cards.last.value.index ==
+                  1;
+            }
           }
         },
       );

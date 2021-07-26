@@ -4,6 +4,8 @@
 [x] drag from usedCard pile
 [x] Add Feedback column on drag
 [x] Add card to finish pile
-[] Animated start
+[x] Animated start
 [] Animated Finish
 [] Hard Mode
+[] static screen size / card size
+[] common grid layout functions
